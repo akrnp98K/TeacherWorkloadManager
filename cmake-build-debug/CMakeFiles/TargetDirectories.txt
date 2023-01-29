@@ -1,0 +1,3 @@
+/Users/xiaojingye/Desktop/TeacherWorkloadManager/cmake-build-debug/CMakeFiles/CTest.dir
+/Users/xiaojingye/Desktop/TeacherWorkloadManager/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/xiaojingye/Desktop/TeacherWorkloadManager/cmake-build-debug/CMakeFiles/rebuild_cache.dir
