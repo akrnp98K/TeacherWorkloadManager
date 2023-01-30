@@ -1,5 +1,5 @@
 //
-// Created by 王诗涵 on 2023/1/29.
+// Created by 王诗涵 on 2023/1/30.
 //
 
 #ifndef CTEST_STRUCTUREOPERATION_H
@@ -66,6 +66,9 @@ void AddTeacherInformation(List L) {
 
 Position Lookup(List L, char *Indexes) {    //查找信息
     Position P = L->Next;
+    if (IsEmpty(L)){
+        return NULL;
+    }
     char *container = malloc(sizeof(40));
     if (IdentificationNumberOrName(Indexes)) {
         strcpy(container, P->name);
@@ -79,6 +82,10 @@ Position Lookup(List L, char *Indexes) {    //查找信息
 }
 
 void SetWorkload(List L) { //设置修改教师某学期的工作量
+    if (IsEmpty(L)){
+        printf("你的表中没有任何数据，无法执行。\n");
+        return;
+    }
     char *Teacher = (char *) malloc(sizeof(40));
     puts("输入要修改工作量的教师的姓名或编号");
     scanf("%s", Teacher);
@@ -106,7 +113,15 @@ void SetWorkload(List L) { //设置修改教师某学期的工作量
 //查找某个教师某个学期的工作量
 Position FindWorkload(List L)
 {
+    if (IsEmpty(L)){
+        printf("你的表中没有任何数据，无法执行。\n");
+        return NULL;
+    }
     char *Indexes = (char *) malloc(sizeof(40));
+    if (Indexes == NULL){
+        printf("内存分配出现错误\n");
+        return NULL;
+    }
     puts("输入要查找工作量的教师的姓名或编号");
     scanf("%s", Indexes);
     Position P = Lookup(L, Indexes);
@@ -134,7 +149,15 @@ Position FindWorkload(List L)
 
 //删除工作量
 void DeleteWorkloadInformation(List L) {
+    if (IsEmpty(L)){
+        printf("你的表中没有任何数据，无法执行。\n");
+        return;
+    }
     char *Indexes = (char *) malloc(sizeof(40));
+    if (Indexes == NULL){
+        printf("内存分配出现错误\n");
+        return;
+    }
     printf("输入你要删除工作量的教师的姓名或编号：\n");
     scanf("%s", Indexes);
     Position P = Lookup(L, Indexes);
@@ -156,7 +179,12 @@ void DeleteWorkloadInformation(List L) {
     }
 }
 
-void StatisticalWorkload(List L, char *Indexes) {  //统计教师年度总工作量
+//统计教师年度总工作量
+void StatisticalWorkload(List L, char *Indexes) {
+    if (IsEmpty(L)){
+        printf("你的表中没有任何数据，无法执行。\n");
+        return;
+    }
 //    char* Indexes = (char*)malloc(sizeof(40));
 //    puts("输入你想要统计工作量信息的教师的姓名或者编号。 如要统计所以教师工作量信息，请输入 \"TotalAll\"");
 //    scanf("%s",Indexes);
@@ -174,16 +202,32 @@ void StatisticalWorkload(List L, char *Indexes) {  //统计教师年度总工作
     }
 }
 
-Position FindPrevious(List L, char *Indexes) { //查找目标参数的前一个节点
+//查找目标参数的前一个节点
+Position FindPrevious(List L, char *Indexes) {
     Position P;
     P = L;
-    while (P->Next != NULL && strcmp(P->Next->name, Indexes) != 0) {
-        P = P->Next;
+    char *container = malloc(sizeof(40));
+    if (container != NULL){
+        if (IdentificationNumberOrName(Indexes)){
+            while (P->Next != NULL && strcmp(P->Next->name, Indexes) != 0) {
+                P = P->Next;
+            }
+        } else{
+            while (P->Next != NULL && strcmp(P->Next->no, Indexes) != 0) {
+                P = P->Next;
+            }
+        }
     }
+
     return P;
 }
 
-void DeleteNode(List L, char *Indexes) {   //删除节点
+//删除节点
+void DeleteNode(List L, char *Indexes) {
+    if (IsEmpty(L)){
+        printf("你的表中没有任何数据，无法执行。\n");
+        return;
+    }
     Position P, TemCell;
     P = FindPrevious(L, Indexes);
     if (!IsLate(P)) {
@@ -192,9 +236,15 @@ void DeleteNode(List L, char *Indexes) {   //删除节点
     } else {
         P->Next = NULL;
     }
+    if (Lookup(L,Indexes)==NULL){
+        puts("删除成功....");
+    } else{
+        printf("删除失败.....");/**/
+    }
 }
 
-void DeleteList(List L){  //删除表
+//删除表
+void DeleteList(List L){
     Position P,Tmp;
     P=L->Next;
     L->Next = NULL;
@@ -314,13 +364,14 @@ void PrintInformation(List L,char * Indexes){
 
 //选项菜单函数
 void MenuHelp(){
-    printf("选择你要进行的操作：\n"
+    printf("\n选择你要进行的操作：\n"
            "\t\t1.录入教师信息\n"
            "\t\t2.查找教师工作量信息\n"
            "\t\t3.修改教师工作量信息\n"
            "\t\t4.删除教师工作量信息\n"
            "\t\t5.统计年度总工作量\n"
-           "\t\t6.显示工作量排名\n");
+           "\t\t6.显示工作量排名\n"
+           "\t\t7.删除教师信息\n");
 }
 void menu(){
     printf("START......\n");
@@ -358,6 +409,11 @@ void menu(){
             case 6:
                 RankingTotalWorkload(Head);
                 PrintInformation(Head, "All");
+                break;
+            case 7:
+                puts("输入你想要删除的教师的姓名或者编号\n");
+                scanf("%s", Index);
+                DeleteNode(Head,Index);
                 break;
             case -1:
                 exit(0);
